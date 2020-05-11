@@ -27,7 +27,8 @@ set -e -o pipefail
 # First the options that are passed through to run_ivector_common.sh
 # (some of which are also used in this script directly).
 stage=0
-nj=30
+#nj=30
+nj=`nproc`
 train_set=train_si284
 test_sets="test_dev93 test_eval92"
 gmm=tri4b        # this is the source gmm-dir that we'll use for alignments; it
@@ -143,7 +144,7 @@ fi
 if [ $stage -le 13 ]; then
   # Get the alignments as lattices (gives the chain training more freedom).
   # use the same num-jobs as the alignments
-  steps/align_fmllr_lats.sh --nj 100 --cmd "$train_cmd" ${lores_train_data_dir} \
+  steps/align_fmllr_lats.sh --nj $nj --cmd "$train_cmd" ${lores_train_data_dir} \
     data/lang $gmm_dir $lat_dir
   rm $lat_dir/fsts.*.gz # save space
 fi
